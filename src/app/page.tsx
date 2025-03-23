@@ -17,8 +17,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { AddEditFilamentForm } from "@/components/filaments/add-edit";
+import { BrandOption } from "@/types/brand";
+import { toast } from "sonner"
 
-const filaments: Filament[] = [
+const exampleFilaments: Filament[] = [
   {
     id: "1",
     brand: "ESun",
@@ -93,8 +96,28 @@ const filaments: Filament[] = [
   },
 ];
 
+const brands: BrandOption[] = [
+  { value: "ESun", label: "ESun" },
+  { value: "ColorFabb", label: "ColorFabb" },
+  { value: "Prusament", label: "Prusament" },
+];
+
 export default function Home() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  const [filaments, setFilaments] = useState<Filament[]>(exampleFilaments);
+
+  const handleAddFilament = (values: Omit<Filament, "id" | "status"> & Partial<Pick<Filament, "id" | "status">>) => {
+    const newFilament: Filament = {
+      ...values,
+      id: crypto.randomUUID(),
+      status: "available",
+    };
+
+    setFilaments([...filaments, newFilament]);
+    setIsAddDialogOpen(false);
+    toast.success('Filament has been added')
+  };
 
   return (
     <>
@@ -111,7 +134,11 @@ export default function Home() {
               <DialogHeader>
                 <DialogTitle>Add New Filament</DialogTitle>
               </DialogHeader>
-              <div>TODO</div>
+              <AddEditFilamentForm
+                filament={null}
+                brands={brands}
+                onSubmit={handleAddFilament}
+              />
             </DialogContent>
           </Dialog>
         </div>
