@@ -4,6 +4,7 @@ export interface Filament {
   type: string
   color: string
   spoolSize: number
+  date: Date
   status: "available" | "finished"
 }
 

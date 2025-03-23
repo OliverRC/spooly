@@ -1,9 +1,23 @@
-'use client'
+"use client";
 
-import { Header } from "@/components/header";
 import FilamentTable from "@/components/filaments/table";
+import { Button } from "@/components/ui/button";
 
 import { Filament } from "@/types/filament";
+import { PlusCircle } from "lucide-react";
+
+import { useState } from "react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
 const filaments: Filament[] = [
   {
     id: "1",
@@ -12,6 +26,7 @@ const filaments: Filament[] = [
     color: "Black",
     spoolSize: 1000,
     status: "available",
+    date: new Date("2022-01-01"),
   },
   {
     id: "2",
@@ -20,6 +35,7 @@ const filaments: Filament[] = [
     color: "White",
     spoolSize: 1000,
     status: "available",
+    date: new Date("2022-03-01"),
   },
   {
     id: "3",
@@ -28,6 +44,7 @@ const filaments: Filament[] = [
     color: "Black",
     spoolSize: 1000,
     status: "finished",
+    date: new Date("2022-04-01"),
   },
   {
     id: "4",
@@ -36,6 +53,7 @@ const filaments: Filament[] = [
     color: "NinjaFlex",
     spoolSize: 500,
     status: "available",
+    date: new Date("2022-05-01"),
   },
   {
     id: "5",
@@ -44,6 +62,7 @@ const filaments: Filament[] = [
     color: "Galaxy Blue",
     spoolSize: 1000,
     status: "available",
+    date: new Date("2022-06-01"),
   },
   {
     id: "6",
@@ -52,6 +71,7 @@ const filaments: Filament[] = [
     color: "Galaxy Blue",
     spoolSize: 1000,
     status: "finished",
+    date: new Date("2022-07-01"),
   },
   {
     id: "7",
@@ -60,6 +80,7 @@ const filaments: Filament[] = [
     color: "Galaxy Blue",
     spoolSize: 1000,
     status: "available",
+    date: new Date("2022-08-01"),
   },
   {
     id: "8",
@@ -68,17 +89,41 @@ const filaments: Filament[] = [
     color: "Galaxy Black",
     spoolSize: 1000,
     status: "finished",
+    date: new Date("2022-09-01"),
   },
 ];
 
-
 export default function Home() {
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
   return (
-    <main className="min-h-screen bg-background">
-      <Header />
-      <div className="mx-auto max-w-7xl py-10">
-        <FilamentTable filaments={filaments} onEdit={() => {}} onDelete={() => {}} onMarkAsFinished={() => {}} onRestock={() => {}} />
+    <>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4">
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <PlusCircle className="size-4" />
+                Add Filament
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add New Filament</DialogTitle>
+              </DialogHeader>
+              <div>TODO</div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <FilamentTable
+          filaments={filaments}
+          onEdit={() => {}}
+          onDelete={() => {}}
+          onMarkAsFinished={() => {}}
+          onRestock={() => {}}
+        />
       </div>
-    </main>
+    </>
   );
 }

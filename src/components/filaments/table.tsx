@@ -31,6 +31,7 @@ export default function FilamentTable({ filaments, onEdit, onDelete, onMarkAsFin
           <TableHead>Color</TableHead>
           <TableHead>Spool Size (kg)</TableHead>
           <TableHead>Status</TableHead>
+          <TableHead>Date</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -46,6 +47,7 @@ export default function FilamentTable({ filaments, onEdit, onDelete, onMarkAsFin
                       {filament.status === "available" ? "Available" : "Finished"}
                     </Badge>
                   </TableCell>
+                  <TableCell>{filament.date.toDateString()}</TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -82,14 +84,6 @@ export default function FilamentTable({ filaments, onEdit, onDelete, onMarkAsFin
                   </TableCell>
           </TableRow>
         ))}
-        <TableRow>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-        </TableRow>
       </TableBody>
     </Table>
     </div>
