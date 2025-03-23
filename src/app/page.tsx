@@ -2,6 +2,14 @@
 
 import FilamentTable from "@/components/filaments/table";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { Filament } from "@/types/filament";
 import { PlusCircle } from "lucide-react";
@@ -109,7 +117,6 @@ const brands: BrandOption[] = [
   { value: "Proto-Pasta", label: "Proto-Pasta" },
   { value: "Sunlu", label: "Sunlu" },
   { value: "Taulman3D", label: "Taulman3D" },
-  
 ];
 
 export default function Home() {
@@ -141,7 +148,7 @@ export default function Home() {
   const editFilament = (filament: Filament) => {
     setAddEditFilament(filament);
     setIsAddEditDialogOpen(true);
-  };  
+  };
 
   const handleEditFilament = (
     values: Omit<Filament, "id" | "status"> &
@@ -186,10 +193,36 @@ export default function Home() {
     toast.success("Filament has been restocked");
   };
 
+  const handleFilterChange = (value: string) => {
+    if (value === "all") {
+      setFilaments(exampleFilaments);
+      return;
+    }
+
+    setFilaments(
+      exampleFilaments.filter((filament) => value.includes(filament.status))
+    );
+  };
+
   return (
     <>
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4">
+          <Select
+            defaultValue={"available"}
+            onValueChange={(value) => handleFilterChange(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a timezone" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="available">Available</SelectItem>
+              <SelectItem value="finished">Finished</SelectItem>
+              <SelectSeparator />
+              <SelectItem value="all">All</SelectItem>
+            </SelectContent>
+          </Select>
+
           <Button onClick={addFilament}>
             <PlusCircle className="size-4" />
             Add Filament
