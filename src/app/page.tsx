@@ -11,15 +11,12 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { AddEditFilamentForm } from "@/components/filaments/add-edit";
 import { BrandOption } from "@/types/brand";
-import { toast } from "sonner"
+import { toast } from "sonner";
 
 const exampleFilaments: Filament[] = [
   {
@@ -97,17 +94,39 @@ const exampleFilaments: Filament[] = [
 ];
 
 const brands: BrandOption[] = [
-  { value: "ESun", label: "ESun" },
+  { value: "3DXTech", label: "3DXTech" },
+  { value: "Atomic", label: "Atomic Filament" },
   { value: "ColorFabb", label: "ColorFabb" },
+  { value: "ESun", label: "eSUN" },
+  { value: "Fiberlogy", label: "Fiberlogy" },
+  { value: "Fillamentum", label: "Fillamentum" },
+  { value: "FormFutura", label: "FormFutura" },
+  { value: "Hatchbox", label: "Hatchbox" },
+  { value: "MatterHackers", label: "MatterHackers" },
+  { value: "Overture", label: "Overture" },
+  { value: "PolyMaker", label: "PolyMaker" },
   { value: "Prusament", label: "Prusament" },
+  { value: "Proto-Pasta", label: "Proto-Pasta" },
+  { value: "Sunlu", label: "Sunlu" },
+  { value: "Taulman3D", label: "Taulman3D" },
+  
 ];
 
 export default function Home() {
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isAddEditDialogOpen, setIsAddEditDialogOpen] = useState(false);
+  const [addEditFilament, setAddEditFilament] = useState<Filament | null>(null);
 
   const [filaments, setFilaments] = useState<Filament[]>(exampleFilaments);
 
-  const handleAddFilament = (values: Omit<Filament, "id" | "status"> & Partial<Pick<Filament, "id" | "status">>) => {
+  const addFilament = () => {
+    setAddEditFilament(null);
+    setIsAddEditDialogOpen(true);
+  };
+
+  const handleAddFilament = (
+    values: Omit<Filament, "id" | "status"> &
+      Partial<Pick<Filament, "id" | "status">>
+  ) => {
     const newFilament: Filament = {
       ...values,
       id: crypto.randomUUID(),
@@ -115,42 +134,91 @@ export default function Home() {
     };
 
     setFilaments([...filaments, newFilament]);
-    setIsAddDialogOpen(false);
-    toast.success('Filament has been added')
+    setIsAddEditDialogOpen(false);
+    toast.success("Filament has been added");
+  };
+
+  const editFilament = (filament: Filament) => {
+    setAddEditFilament(filament);
+    setIsAddEditDialogOpen(true);
+  };  
+
+  const handleEditFilament = (
+    values: Omit<Filament, "id" | "status"> &
+      Partial<Pick<Filament, "id" | "status">>
+  ) => {
+    const updatedFilament: Filament = {
+      ...values,
+      id: addEditFilament?.id || "",
+      status: addEditFilament?.status || "available",
+    };
+
+    setFilaments(
+      filaments.map((filament) =>
+        filament.id === addEditFilament?.id ? updatedFilament : filament
+      )
+    );
+    setIsAddEditDialogOpen(false);
+    toast.success("Filament has been updated");
+  };
+
+  const deleteFilament = (id: string) => {
+    setFilaments(filaments.filter((filament) => filament.id !== id));
+    setIsAddEditDialogOpen(false);
+    toast.success("Filament has been deleted");
+  };
+
+  const markAsFinished = (id: string) => {
+    setFilaments(
+      filaments.map((filament) =>
+        filament.id === id ? { ...filament, status: "finished" } : filament
+      )
+    );
+    toast.success("Filament has been marked as finished");
+  };
+
+  const restock = (id: string) => {
+    setFilaments(
+      filaments.map((filament) =>
+        filament.id === id ? { ...filament, status: "available" } : filament
+      )
+    );
+    toast.success("Filament has been restocked");
   };
 
   return (
     <>
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row justify-end items-start sm:items-center gap-4">
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <PlusCircle className="size-4" />
-                Add Filament
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add New Filament</DialogTitle>
-              </DialogHeader>
-              <AddEditFilamentForm
-                filament={null}
-                brands={brands}
-                onSubmit={handleAddFilament}
-              />
-            </DialogContent>
-          </Dialog>
+          <Button onClick={addFilament}>
+            <PlusCircle className="size-4" />
+            Add Filament
+          </Button>
         </div>
 
         <FilamentTable
           filaments={filaments}
-          onEdit={() => {}}
-          onDelete={() => {}}
-          onMarkAsFinished={() => {}}
-          onRestock={() => {}}
+          onEdit={editFilament}
+          onDelete={deleteFilament}
+          onMarkAsFinished={markAsFinished}
+          onRestock={restock}
         />
       </div>
+
+      <Dialog open={isAddEditDialogOpen} onOpenChange={setIsAddEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {addEditFilament ? "Edit Filament" : "Add New Filament"}
+            </DialogTitle>
+          </DialogHeader>
+          <AddEditFilamentForm
+            filament={addEditFilament}
+            brands={brands}
+            onSubmit={addEditFilament ? handleEditFilament : handleAddFilament}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
