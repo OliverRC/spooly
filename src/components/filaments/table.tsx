@@ -7,7 +7,7 @@ import {
   Trash2,
   CheckCircle,
 } from "lucide-react";
-import { Filament } from "../../types/filament";
+import { Filament } from "@/types";
 import {
   Table,
   TableBody,

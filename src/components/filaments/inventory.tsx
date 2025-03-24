@@ -11,10 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { Filament } from "@/types/filament";
+import { Filament, BrandOption, AddFilament, UpdateFilament } from "@/types";
 import { PlusCircle } from "lucide-react";
 
 import { useState } from "react";
+
+import { addFilament as addFilamentAction } from "@/app/filaments/actions";
 
 import {
   Dialog,
@@ -23,7 +25,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AddEditFilamentForm } from "@/components/filaments/add-edit";
-import { BrandOption } from "@/types/brand";
 import { toast } from "sonner";
 
 export default function FilamentInventory({
@@ -43,15 +44,15 @@ export default function FilamentInventory({
     setIsAddEditDialogOpen(true);
   };
 
-  const handleAddFilament = (
-    values: Omit<Filament, "id" | "status"> &
-      Partial<Pick<Filament, "id" | "status">>
+  const handleAddFilament = async (
+    values: AddFilament
   ) => {
-    const newFilament: Filament = {
-      ...values,
-      id: crypto.randomUUID(),
-      status: "available",
-    };
+    const { data: newFilament, error } = await addFilamentAction(values);
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
 
     setVisibleFilaments([...filaments, newFilament]);
     setIsAddEditDialogOpen(false);
@@ -64,13 +65,13 @@ export default function FilamentInventory({
   };
 
   const handleEditFilament = (
-    values: Omit<Filament, "id" | "status"> &
-      Partial<Pick<Filament, "id" | "status">>
+    values: UpdateFilament
   ) => {
     const updatedFilament: Filament = {
       ...values,
       id: addEditFilament?.id || "",
       status: addEditFilament?.status || "available",
+      createdAt: addEditFilament?.createdAt || new Date().toISOString(),
     };
 
     setVisibleFilaments(

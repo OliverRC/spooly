@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,7 +21,7 @@ import {
   SelectValue,
   SelectSeparator,
 } from "@/components/ui/select";
-import type { Filament } from "@/types/filament";
+import type { AddFilament, Filament, UpdateFilament } from "@/types";
 import { PlusCircle } from "lucide-react";
 
 const filamentTypes = [
@@ -39,14 +38,14 @@ const filamentTypes = [
   "Other",
 ];
 
-import { BrandOption } from "@/types/brand";
+import { BrandOption } from "@/types";
 
 const formSchema = z.object({
   brand: z.string().min(1, "Brand is required"),
   type: z.string().min(1, "Type is required"),
   color: z.string().min(1, "Color is required"),
   spoolSize: z.coerce.number().positive("Spool size must be positive"),
-  date: z.date().default(() => new Date()),
+  stockDate: z.string().min(1, "Stock date is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -54,7 +53,7 @@ type FormValues = z.infer<typeof formSchema>;
 interface FilamentFormProps {
   filament?: Filament | null;
   brands: BrandOption[];
-  onSubmit: (values: Omit<Filament, "id" | "status"> & Partial<Pick<Filament, "id" | "status">>) => void;
+  onSubmit: (values: AddFilament | UpdateFilament) => void;
 }
 
 export function AddEditFilamentForm({
@@ -70,14 +69,14 @@ export function AddEditFilamentForm({
           type: filament.type,
           color: filament.color,
           spoolSize: filament.spoolSize,
-          date: filament.date,
+          stockDate: filament.stockDate,
         }
       : {
           brand: "",
           type: "",
           color: "",
           spoolSize: 1000,
-          date: new Date(Date.now()),
+          stockDate: new Date(Date.now()).toISOString(),
         },
   });
 
@@ -86,7 +85,8 @@ export function AddEditFilamentForm({
       onSubmit({
         ...values,
         id: filament.id,
-        status: filament.status
+        status: filament.status,
+        stockDate: filament.stockDate,
       });
     } else {
       onSubmit(values);
