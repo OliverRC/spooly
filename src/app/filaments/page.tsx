@@ -1,8 +1,7 @@
-import { fetch } from "@/app/filaments/actions";
-
 import { BrandOption } from "@/types";
 import { toast } from "sonner";
 import FilamentInventory from "@/components/filaments/inventory";
+import { createClient } from "@/utils/supabase/server";
 
 const brands: BrandOption[] = [
   { value: "3DXTech", label: "3DXTech" },
@@ -23,8 +22,9 @@ const brands: BrandOption[] = [
 ];
 
 export default async function Page() {
-  const { data, error } = await fetch();
-
+  const supabase = await createClient();
+  const { data, error } = await supabase.from('filaments').select();
+  
   if (error) {
     toast.error(error.message);
   }

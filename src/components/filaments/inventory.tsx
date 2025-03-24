@@ -16,7 +16,7 @@ import { PlusCircle } from "lucide-react";
 
 import { useState } from "react";
 
-import { addFilament as addFilamentAction } from "@/app/filaments/actions";
+import { addFilament as addFilamentAction, deleteFilament as deleteFilamentAction } from "@/app/filaments/actions";
 
 import {
   Dialog,
@@ -47,14 +47,8 @@ export default function FilamentInventory({
   const handleAddFilament = async (
     values: AddFilament
   ) => {
-    const { data: newFilament, error } = await addFilamentAction(values);
-
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-
-    setVisibleFilaments([...filaments, newFilament]);
+    await addFilamentAction(values);
+    
     setIsAddEditDialogOpen(false);
     toast.success("Filament has been added");
   };
@@ -83,10 +77,15 @@ export default function FilamentInventory({
     toast.success("Filament has been updated");
   };
 
-  const deleteFilament = (id: string) => {
-    setVisibleFilaments(visibleFilaments.filter((filament) => filament.id !== id));
-    setIsAddEditDialogOpen(false);
-    toast.success("Filament has been deleted");
+  const deleteFilament = async (id: string) => {
+    try {
+      await deleteFilamentAction(id);
+      setVisibleFilaments(visibleFilaments.filter(filament => filament.id !== id));
+      setIsAddEditDialogOpen(false);
+      toast.success("Filament has been deleted");
+    } catch (error) {
+      toast.error("Failed to delete filament");
+    }
   };
 
   const markAsFinished = (id: string) => {
