@@ -19,6 +19,7 @@ export type Database = {
           status: string
           stockDate: string
           type: string
+          user_id: string
         }
         Insert: {
           brand: string
@@ -26,9 +27,10 @@ export type Database = {
           createdAt?: string
           id?: string
           spoolSize: number
-          status: string
+          status?: string
           stockDate: string
           type: string
+          user_id?: string
         }
         Update: {
           brand?: string
@@ -39,6 +41,7 @@ export type Database = {
           status?: string
           stockDate?: string
           type?: string
+          user_id?: string
         }
         Relationships: []
       }

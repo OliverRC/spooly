@@ -6,9 +6,21 @@ import { revalidatePath } from "next/cache";
 
 export async function addFilament(values: AddFilament) {
     const supabase = await createClient();
+
+    const { data: { user} } = await supabase.auth.getUser();
+
+    if (!user) {
+        throw new Error("User is not authenticated");
+    }
+
+    values.user_id = user.id;
+
     const { error } = await supabase.from('filaments').insert(values);
 
+    throw new Error("Failed to add filament");
+    
     if (error) {
+        console.log(error);
         throw new Error("Failed to add filament");
     }
 

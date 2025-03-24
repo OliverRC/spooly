@@ -47,10 +47,13 @@ export default function FilamentInventory({
   const handleAddFilament = async (
     values: AddFilament
   ) => {
-    await addFilamentAction(values);
-    
-    setIsAddEditDialogOpen(false);
-    toast.success("Filament has been added");
+    try {
+      await addFilamentAction(values);
+      setIsAddEditDialogOpen(false);
+      toast.success("Filament has been added");
+    } catch (error) {
+      toast.error("Failed to add filament");
+    }
   };
 
   const editFilament = (filament: Filament) => {

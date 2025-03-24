@@ -1,7 +1,8 @@
 import { BrandOption } from "@/types";
-import { toast } from "sonner";
+  import { toast } from "sonner";
 import FilamentInventory from "@/components/filaments/inventory";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 const brands: BrandOption[] = [
   { value: "3DXTech", label: "3DXTech" },
@@ -23,6 +24,13 @@ const brands: BrandOption[] = [
 
 export default async function Page() {
   const supabase = await createClient();
+
+  const { data: { user} } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
   const { data, error } = await supabase.from('filaments').select();
   
   if (error) {
