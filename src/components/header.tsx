@@ -15,10 +15,10 @@ export async function Header() {
   return (
     <header className="border-b">
       <div className="mx-auto max-w-7xl flex h-12 items-center justify-between">
-        <div className="flex items-center">
+        <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
           <Logo />
           <h1 className="text-2xl font-bold">Spooly</h1>
-        </div>
+        </Link>
         <div className="flex items-center gap-2">
           {user ? (
             <>
