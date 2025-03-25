@@ -40,6 +40,36 @@ export async function updateFilament(values: UpdateFilament) {
     revalidatePath('/filaments');
 }
 
+export async function markAsFinished(id: string) {
+    if (!id) {
+        throw new Error("No filament id provided");
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase.from('filaments').update({ status: 'finished' }).eq('id', id);
+
+    if (error) {
+        throw new Error("Failed to mark filament as finished");
+    }
+
+    revalidatePath('/filaments');
+}
+
+export async function restock(id: string) {
+    if (!id) {
+        throw new Error("No filament id provided");
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase.from('filaments').update({ status: 'available' }).eq('id', id);
+
+    if (error) {
+        throw new Error("Failed to restock filament");
+    }
+
+    revalidatePath('/filaments');
+}
+
 export async function deleteFilament(id: string) {
     if (!id) {
         throw new Error("No filament id provided");

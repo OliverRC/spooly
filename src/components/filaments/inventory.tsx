@@ -16,7 +16,13 @@ import { PlusCircle } from "lucide-react";
 
 import { useState } from "react";
 
-import { addFilament as addFilamentAction, deleteFilament as deleteFilamentAction, updateFilament as updateFilamentAction } from "@/app/filaments/actions";
+import { 
+  addFilament as addFilamentAction, 
+  deleteFilament as deleteFilamentAction, 
+  markAsFinished as markAsFinishedAction, 
+  restock as restockAction, 
+  updateFilament as updateFilamentAction 
+} from "@/app/filaments/actions";
 
 import {
   Dialog,
@@ -84,22 +90,32 @@ export default function FilamentInventory({
     }
   };
 
-  const markAsFinished = (id: string) => {
-    setVisibleFilaments(
-      filaments.map((filament) =>
-        filament.id === id ? { ...filament, status: "finished" } : filament
-      )
-    );
-    toast.success("Filament has been marked as finished");
+  const markAsFinished = async (id: string) => {
+    try {
+      await markAsFinishedAction(id);
+      setVisibleFilaments(
+        filaments.map((filament) =>
+          filament.id === id ? { ...filament, status: "finished" } : filament
+        )
+      );
+      toast.success("Filament has been marked as finished");
+    } catch (error) {
+      toast.error("Failed to mark filament as finished");
+    }
   };
 
-  const restock = (id: string) => {
-    setVisibleFilaments(
-      filaments.map((filament) =>
-        filament.id === id ? { ...filament, status: "available" } : filament
-      )
-    );
-    toast.success("Filament has been restocked");
+  const restock = async (id: string) => {
+    try {
+      await restockAction(id);
+      setVisibleFilaments(
+        filaments.map((filament) =>
+          filament.id === id ? { ...filament, status: "available" } : filament
+        )
+      );
+      toast.success("Filament has been restocked");
+    } catch (error) {
+      toast.error("Failed to restock filament");
+    }
   };
 
   const handleFilterChange = (value: string) => {
