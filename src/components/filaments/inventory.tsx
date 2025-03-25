@@ -16,7 +16,7 @@ import { PlusCircle } from "lucide-react";
 
 import { useState } from "react";
 
-import { addFilament as addFilamentAction, deleteFilament as deleteFilamentAction } from "@/app/filaments/actions";
+import { addFilament as addFilamentAction, deleteFilament as deleteFilamentAction, updateFilament as updateFilamentAction } from "@/app/filaments/actions";
 
 import {
   Dialog,
@@ -61,23 +61,16 @@ export default function FilamentInventory({
     setIsAddEditDialogOpen(true);
   };
 
-  const handleEditFilament = (
+  const handleEditFilament = async (
     values: UpdateFilament
   ) => {
-    const updatedFilament: Filament = {
-      ...values,
-      id: addEditFilament?.id || "",
-      status: addEditFilament?.status || "available",
-      createdAt: addEditFilament?.createdAt || new Date().toISOString(),
-    };
-
-    setVisibleFilaments(
-      filaments.map((filament) =>
-        filament.id === addEditFilament?.id ? updatedFilament : filament
-      )
-    );
-    setIsAddEditDialogOpen(false);
-    toast.success("Filament has been updated");
+    try {
+      await updateFilamentAction(values);
+      setIsAddEditDialogOpen(false);
+      toast.success("Filament has been updated");
+    } catch (error) {
+      toast.error("Failed to update filament");
+    }
   };
 
   const deleteFilament = async (id: string) => {
@@ -164,7 +157,8 @@ export default function FilamentInventory({
           <AddEditFilamentForm
             filament={addEditFilament}
             brands={brands}
-            onSubmit={addEditFilament ? handleEditFilament : handleAddFilament}
+            onAdd={handleAddFilament}
+            onUpdate={handleEditFilament}
           />
         </DialogContent>
       </Dialog>

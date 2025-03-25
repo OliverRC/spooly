@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
 
-export async function magicLinkLogin(previousState: any, formData: FormData) {
+export async function magicLinkLogin(previousState: { sent: boolean }, formData: FormData) {
   const supabase = await createClient();
 
   const email = formData.get("email") as string;
@@ -26,5 +26,9 @@ export async function magicLinkLogin(previousState: any, formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+
+  return {
+    email,
+    sent: true
+  }
 }

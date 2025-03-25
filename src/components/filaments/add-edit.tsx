@@ -53,13 +53,15 @@ type FormValues = z.infer<typeof formSchema>;
 interface FilamentFormProps {
   filament?: Filament | null;
   brands: BrandOption[];
-  onSubmit: (values: AddFilament | UpdateFilament) => void;
+  onAdd: (values: AddFilament) => void;
+  onUpdate: (values: UpdateFilament) => void;
 }
 
 export function AddEditFilamentForm({
   filament,
   brands,
-  onSubmit,
+  onAdd,
+  onUpdate,
 }: FilamentFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -82,14 +84,14 @@ export function AddEditFilamentForm({
 
   const handleSubmit = (values: FormValues) => {
     if (filament) {
-      onSubmit({
+      onUpdate({
         ...values,
         id: filament.id,
         status: filament.status,
         stockDate: filament.stockDate,
       });
     } else {
-      onSubmit(values);
+      onAdd(values);
     }
   };
 

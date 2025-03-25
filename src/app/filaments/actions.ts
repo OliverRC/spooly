@@ -17,8 +17,6 @@ export async function addFilament(values: AddFilament) {
 
     const { error } = await supabase.from('filaments').insert(values);
 
-    throw new Error("Failed to add filament");
-    
     if (error) {
         console.log(error);
         throw new Error("Failed to add filament");
@@ -28,6 +26,10 @@ export async function addFilament(values: AddFilament) {
 }
 
 export async function updateFilament(values: UpdateFilament) {
+    if (!values.id) {
+        throw new Error("No filament id provided");
+    }
+
     const supabase = await createClient();
     const { error } = await supabase.from('filaments').update(values).eq('id', values.id);
 
@@ -39,7 +41,9 @@ export async function updateFilament(values: UpdateFilament) {
 }
 
 export async function deleteFilament(id: string) {
-    console.log(id);
+    if (!id) {
+        throw new Error("No filament id provided");
+    }
 
     const supabase = await createClient();
     const { error } = await supabase.from('filaments').delete().eq('id', id);
