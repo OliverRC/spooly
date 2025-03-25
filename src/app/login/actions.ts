@@ -32,3 +32,9 @@ export async function magicLinkLogin(previousState: { sent: boolean }, formData:
     sent: true
   }
 }
+
+export async function logout() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect('/');
+}
